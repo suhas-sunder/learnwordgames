@@ -67,6 +67,8 @@ export default function Home({}: Route.ComponentProps) {
         "@type": "WebSite",
         name: "Learn Word Games",
         url: "https://learnwordgames.com/",
+        description:
+          "Learn Word Games is your home for word game guides, strategies, rules, and daily practice puzzles. Master Wordle, crosswords, anagrams, cryptograms, spelling bee, and more.",
         potentialAction: {
           "@type": "SearchAction",
           target: "https://learnwordgames.com/?q={search_term_string}",
@@ -81,10 +83,121 @@ export default function Home({}: Route.ComponentProps) {
       },
       {
         "@type": "FAQPage",
-        mainEntity: faqs.map((f) => ({
-          "@type": "Question",
-          name: f.q,
-          acceptedAnswer: { "@type": "Answer", text: f.a },
+        mainEntity: [
+          {
+            "@type": "Question",
+            name: "What is Learn Word Games?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "A friendly place to learn rules, strategies, and vocabulary for popular word games with short, practical lessons.",
+            },
+          },
+          {
+            "@type": "Question",
+            name: "Which games will be covered?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "Wordle and variants, anagrams, crosswords, cryptograms, pangrams, spelling games, and themed vocabulary challenges.",
+            },
+          },
+          {
+            "@type": "Question",
+            name: "Are there daily practice puzzles?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "Yes. We plan to publish warmups and mini challenges you can finish in a few minutes.",
+            },
+          },
+          {
+            "@type": "Question",
+            name: "Is it free?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "Yes. The goal is helpful content that you can read and use right away.",
+            },
+          },
+        ],
+      },
+      {
+        "@type": "ItemList",
+        name: "What You Will Learn",
+        itemListElement: [
+          "Rules and formats",
+          "Pattern spotting",
+          "Vocabulary growth",
+          "Anagram mastery",
+          "Clue decoding",
+          "Daily practice",
+        ].map((name, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          name,
+        })),
+      },
+      {
+        "@type": "ItemList",
+        name: "Content Sections",
+        itemListElement: [
+          "Beginner’s Guide to Word Games",
+          "Word Game Strategy Library",
+          "Daily Practice Hub",
+          "Rules, Formats, and Scoring",
+          "Vocabulary Builder for Word Games",
+          "Anagram and Pangram Lab",
+          "Crossword and Cryptic Skills",
+          "Spelling Games and Letter Frequency",
+          "Timed Mode Playbook",
+          "Word Game Reviews and Comparisons",
+          "Resources for Parents and Teachers",
+          "Accessibility and Mobile Play",
+          "Word Game Glossary",
+          "Track Progress and Improve",
+          "Coming Soon",
+          "Learning Paths for Every Player",
+          "Curated Word Lists for Puzzles",
+          "Word Game Tools and Generators",
+          "Letter Frequency and Position Tactics",
+          "Affixes Playbook for Faster Solves",
+          "ESL and Phonics Corner",
+          "Family and Classroom Word Games",
+          "Competitive Play and Performance Metrics",
+          "Common Word Game Errors and How to Fix Them",
+          "Accessibility Checklist for Comfortable Play",
+          "Mobile Typing Tips for Word Games",
+          "Printables and Offline Study",
+          "Editorial Roadmap for Learn Word Games",
+        ].map((name, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          name,
+        })),
+      },
+      {
+        "@type": "ItemList",
+        name: "Daily Brain Warmup Examples",
+        itemListElement: [
+          "Find a 7-letter anagram from: T, E, A, R, S, L, I",
+          "Define “canny” in one sentence",
+          "Make 4 two-syllable rhymes for “cable”",
+        ].map((name, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          name,
+        })),
+      },
+      {
+        "@type": "ItemList",
+        name: "Glossary Terms",
+        itemListElement: [
+          "Digraph",
+          "Pangram",
+          "Anagram indicator",
+          "Container",
+          "Cross letter",
+        ].map((name, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          name,
         })),
       },
     ],
