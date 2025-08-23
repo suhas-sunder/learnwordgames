@@ -11,11 +11,7 @@ export function meta({}: Route.MetaArgs) {
   return [
     { title },
     { name: "description", content: description },
-    {
-      name: "keywords",
-      content:
-        "word games, wordle, anagrams, crosswords, cryptograms, spelling bee, vocabulary, puzzles, word lists",
-    },
+    // Removed "keywords" (ignored by Google and can look spammy)
     { name: "robots", content: "index, follow, max-image-preview:large" },
     { property: "og:title", content: title },
     { property: "og:description", content: description },
@@ -52,7 +48,7 @@ export default function Home({}: Route.ComponentProps) {
     },
     {
       q: "Are there daily practice puzzles?",
-      a: "Yes. We plan to publish warmups and mini challenges you can finish in a few minutes.",
+      a: "Yes. We publish warmups and mini challenges you can finish in a few minutes.",
     },
     {
       q: "Is it free?",
@@ -69,11 +65,6 @@ export default function Home({}: Route.ComponentProps) {
         url: "https://learnwordgames.com/",
         description:
           "Learn Word Games is your home for word game guides, strategies, rules, and daily practice puzzles. Master Wordle, crosswords, anagrams, cryptograms, spelling bee, and more.",
-        potentialAction: {
-          "@type": "SearchAction",
-          target: "https://learnwordgames.com/?q={search_term_string}",
-          "query-input": "required name=search_term_string",
-        },
       },
       {
         "@type": "Organization",
@@ -83,121 +74,10 @@ export default function Home({}: Route.ComponentProps) {
       },
       {
         "@type": "FAQPage",
-        mainEntity: [
-          {
-            "@type": "Question",
-            name: "What is Learn Word Games?",
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: "A friendly place to learn rules, strategies, and vocabulary for popular word games with short, practical lessons.",
-            },
-          },
-          {
-            "@type": "Question",
-            name: "Which games will be covered?",
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: "Wordle and variants, anagrams, crosswords, cryptograms, pangrams, spelling games, and themed vocabulary challenges.",
-            },
-          },
-          {
-            "@type": "Question",
-            name: "Are there daily practice puzzles?",
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: "Yes. We plan to publish warmups and mini challenges you can finish in a few minutes.",
-            },
-          },
-          {
-            "@type": "Question",
-            name: "Is it free?",
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: "Yes. The goal is helpful content that you can read and use right away.",
-            },
-          },
-        ],
-      },
-      {
-        "@type": "ItemList",
-        name: "What You Will Learn",
-        itemListElement: [
-          "Rules and formats",
-          "Pattern spotting",
-          "Vocabulary growth",
-          "Anagram mastery",
-          "Clue decoding",
-          "Daily practice",
-        ].map((name, i) => ({
-          "@type": "ListItem",
-          position: i + 1,
-          name,
-        })),
-      },
-      {
-        "@type": "ItemList",
-        name: "Content Sections",
-        itemListElement: [
-          "Beginner’s Guide to Word Games",
-          "Word Game Strategy Library",
-          "Daily Practice Hub",
-          "Rules, Formats, and Scoring",
-          "Vocabulary Builder for Word Games",
-          "Anagram and Pangram Lab",
-          "Crossword and Cryptic Skills",
-          "Spelling Games and Letter Frequency",
-          "Timed Mode Playbook",
-          "Word Game Reviews and Comparisons",
-          "Resources for Parents and Teachers",
-          "Accessibility and Mobile Play",
-          "Word Game Glossary",
-          "Track Progress and Improve",
-          "Coming Soon",
-          "Learning Paths for Every Player",
-          "Curated Word Lists for Puzzles",
-          "Word Game Tools and Generators",
-          "Letter Frequency and Position Tactics",
-          "Affixes Playbook for Faster Solves",
-          "ESL and Phonics Corner",
-          "Family and Classroom Word Games",
-          "Competitive Play and Performance Metrics",
-          "Common Word Game Errors and How to Fix Them",
-          "Accessibility Checklist for Comfortable Play",
-          "Mobile Typing Tips for Word Games",
-          "Printables and Offline Study",
-          "Editorial Roadmap for Learn Word Games",
-        ].map((name, i) => ({
-          "@type": "ListItem",
-          position: i + 1,
-          name,
-        })),
-      },
-      {
-        "@type": "ItemList",
-        name: "Daily Brain Warmup Examples",
-        itemListElement: [
-          "Find a 7-letter anagram from: T, E, A, R, S, L, I",
-          "Define “canny” in one sentence",
-          "Make 4 two-syllable rhymes for “cable”",
-        ].map((name, i) => ({
-          "@type": "ListItem",
-          position: i + 1,
-          name,
-        })),
-      },
-      {
-        "@type": "ItemList",
-        name: "Glossary Terms",
-        itemListElement: [
-          "Digraph",
-          "Pangram",
-          "Anagram indicator",
-          "Container",
-          "Cross letter",
-        ].map((name, i) => ({
-          "@type": "ListItem",
-          position: i + 1,
-          name,
+        mainEntity: faqs.map((f) => ({
+          "@type": "Question",
+          name: f.q,
+          acceptedAnswer: { "@type": "Answer", text: f.a },
         })),
       },
     ],
@@ -210,14 +90,6 @@ export default function Home({}: Route.ComponentProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-
-      {/* Top notice, optional */}
-      <div className="w-full border-b border-neutral-200 bg-neutral-50">
-        <div className="mx-auto max-w-6xl px-4 py-2 text-sm text-neutral-600">
-          Building now. Content is arriving soon. Last updated{" "}
-          {new Date(nowISO).toLocaleDateString()}.
-        </div>
-      </div>
 
       {/* Hero */}
       <section className="mx-auto max-w-6xl px-4 pt-12 pb-10">
@@ -250,8 +122,7 @@ export default function Home({}: Route.ComponentProps) {
             <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
               <h2 className="text-base font-semibold">Daily Brain Warmup</h2>
               <p className="mt-2 text-sm text-neutral-600">
-                Short practice prompts that keep your mind sharp. New sets will
-                appear here.
+                Short practice prompts that keep your mind sharp.
               </p>
               <ul className="mt-4 space-y-2 text-sm text-neutral-800">
                 <li>
@@ -311,7 +182,7 @@ export default function Home({}: Route.ComponentProps) {
         </div>
       </section>
 
-      {/* Placeholder content buckets with SEO-rich copy */}
+      {/* Content buckets */}
       <section className="mx-auto max-w-6xl px-4 py-10">
         <div className="grid gap-4 lg:grid-cols-3">
           <article className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
@@ -355,7 +226,7 @@ export default function Home({}: Route.ComponentProps) {
         </div>
       </section>
 
-      {/* Social proof, simple and neutral */}
+      {/* Social proof */}
       <section className="mx-auto max-w-6xl px-4 py-10">
         <div className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm">
           <div className="grid gap-6 text-center sm:grid-cols-3">
@@ -388,9 +259,7 @@ export default function Home({}: Route.ComponentProps) {
           New to word games? Start here. Learn the core rules, common formats,
           and simple tactics that improve accuracy and speed. This guide covers
           daily guess games like Wordle, classic crosswords, anagrams, pangrams,
-          spelling challenges, cryptograms, and grid puzzles. You will learn how
-          letter frequency works, why vowels anchor tricky fills, and how to
-          avoid common mistakes that waste guesses.
+          spelling challenges, cryptograms, and grid puzzles.
         </p>
         <ul className="mt-4 list-inside list-disc text-neutral-800">
           <li>Rules and scoring explained with clear examples</li>
@@ -405,9 +274,7 @@ export default function Home({}: Route.ComponentProps) {
         <p className="mt-3 text-neutral-700">
           Practical strategies for popular titles. Use elimination planning in
           Wordle, clue families in crosswords, stem expansion in anagrams,
-          frequency maps in Spelling Bee, and pattern locks in cryptograms. Each
-          strategy is designed to reduce guess count, improve solve rate, and
-          raise your average score without memorizing endless lists.
+          frequency maps in Spelling Bee, and pattern locks in cryptograms.
         </p>
         <ul className="mt-4 grid gap-2 sm:grid-cols-2">
           <li className="list-inside list-disc text-neutral-800">
@@ -431,8 +298,7 @@ export default function Home({}: Route.ComponentProps) {
         <p className="mt-3 text-neutral-700">
           Short, repeatable drills that fit a morning routine. Rotate through
           anagram sprints, pangram hunts, mini crosswords, synonym ladders, and
-          letter bucket challenges. Daily practice improves recall, pattern
-          spotting, and endgame discipline across all word puzzle formats.
+          letter bucket challenges.
         </p>
         <ul className="mt-4 list-inside list-disc text-neutral-800">
           <li>5-minute warmups for consistency</li>
@@ -447,8 +313,7 @@ export default function Home({}: Route.ComponentProps) {
         <p className="mt-3 text-neutral-700">
           Understand how different word games score points and define win
           conditions. Learn standard grids, clue types, guess limits, streak
-          tracking, and tie breakers. Knowing the format helps you pick the
-          right tactic at the right time.
+          tracking, and tie breakers.
         </p>
         <dl className="mt-4 grid gap-4 sm:grid-cols-2">
           <div className="rounded-xl border border-neutral-200 p-4">
@@ -473,10 +338,8 @@ export default function Home({}: Route.ComponentProps) {
           Vocabulary Builder for Word Games
         </h2>
         <p className="mt-3 text-neutral-700">
-          Grow a competitive vocabulary with curated lists that actually appear
-          in puzzles. Study high-value stems, common roots and affixes, short
-          power words, and tricky letter pairs. Build recall with themed sets
-          that target common clue patterns.
+          Curated lists that actually appear in puzzles: high-value stems,
+          roots/affixes, short power words, and tricky letter pairs.
         </p>
         <ul className="mt-4 list-inside list-disc text-neutral-800">
           <li>Two- and three-letter power lists</li>
@@ -489,9 +352,8 @@ export default function Home({}: Route.ComponentProps) {
       <section id="anagram-pangram" className="mx-auto max-w-6xl px-4 py-12">
         <h2 className="text-2xl font-bold">Anagram and Pangram Lab</h2>
         <p className="mt-3 text-neutral-700">
-          Train your eye to spot anchors, shuffle consonant clusters, and extend
-          stems into longer words. Learn pangram tactics that cover the full
-          alphabet set without stalling mid-solve.
+          Spot anchors, shuffle consonant clusters, and extend stems into longer
+          words. Tactics that cover the full alphabet set without stalling.
         </p>
         <div className="mt-4 grid gap-3 sm:grid-cols-3">
           <div className="rounded-xl border border-neutral-200 p-4">
@@ -520,8 +382,7 @@ export default function Home({}: Route.ComponentProps) {
         <h2 className="text-2xl font-bold">Crossword and Cryptic Skills</h2>
         <p className="mt-3 text-neutral-700">
           Decode clue structures, track indicator words, and manage grid flow.
-          Learn charades, containers, reversals, anagrams, and double
-          definitions. Use cross letters to verify entries and keep fill clean.
+          Use cross letters to verify entries and keep fill clean.
         </p>
         <ul className="mt-4 list-inside list-disc text-neutral-800">
           <li>Abbreviations that appear often</li>
@@ -537,9 +398,7 @@ export default function Home({}: Route.ComponentProps) {
         </h2>
         <p className="mt-3 text-neutral-700">
           Use frequency maps and vowel placement to prioritize guesses. Master
-          common suffixes and endings that close solves quickly. Improve
-          accuracy by tracking tricky patterns and regional variants when rules
-          allow them.
+          common suffixes and endings that close solves quickly.
         </p>
         <div className="mt-4 rounded-xl border border-neutral-200 p-4 text-sm text-neutral-700">
           Quick tip: start with broad coverage, confirm vowels, then lock
@@ -553,7 +412,7 @@ export default function Home({}: Route.ComponentProps) {
         <p className="mt-3 text-neutral-700">
           Build speed without losing accuracy. Use checkpoint pacing, partial
           fills, letter bank triage, and safe sacrifices when the clock is
-          tight. Warmups prepare your eyes and reduce decision fatigue.
+          tight.
         </p>
         <ul className="mt-4 list-inside list-disc text-neutral-800">
           <li>Pacing and micro-timers</li>
@@ -572,8 +431,7 @@ export default function Home({}: Route.ComponentProps) {
         </h2>
         <p className="mt-3 text-neutral-700">
           See how popular games differ in rules, difficulty, and learning curve.
-          Comparisons help you choose the right practice tool for your goals,
-          from beginner friendly warmups to expert level challenges.
+          Choose the right practice tool for your goals.
         </p>
         <ul className="mt-4 list-inside list-disc text-neutral-800">
           <li>Daily guess games vs. grid-based puzzles</li>
@@ -588,9 +446,9 @@ export default function Home({}: Route.ComponentProps) {
           Resources for Parents and Teachers
         </h2>
         <p className="mt-3 text-neutral-700">
-          Use short, structured activities to boost literacy, spelling, and
-          reasoning skills. Printables and classroom friendly drills support
-          steady progress without screen fatigue.
+          Short, structured activities to boost literacy, spelling, and
+          reasoning skills. Printables and classroom-friendly drills support
+          steady progress.
         </p>
         <ul className="mt-4 list-inside list-disc text-neutral-800">
           <li>Beginner word lists and phonics sets</li>
@@ -608,7 +466,7 @@ export default function Home({}: Route.ComponentProps) {
         <p className="mt-3 text-neutral-700">
           Helpful settings for comfortable play: font sizing, high contrast
           options, reduced motion, and keyboard shortcuts. Mobile tips cover
-          small screen grid navigation and mistake prevention during fast input.
+          small-screen grid navigation and mistake prevention during fast input.
         </p>
         <ul className="mt-4 list-inside list-disc text-neutral-800">
           <li>Readable fonts and clear color feedback</li>
@@ -621,9 +479,8 @@ export default function Home({}: Route.ComponentProps) {
       <section id="glossary" className="mx-auto max-w-6xl px-4 py-12">
         <h2 className="text-2xl font-bold">Word Game Glossary</h2>
         <p className="mt-3 text-neutral-700">
-          A quick reference for common terms. Learn what digraphs, pangrams,
-          anagram indicators, containers, and cross letters mean. Clear
-          definitions make strategy articles easier to follow.
+          A quick reference for common terms: digraphs, pangrams, anagram
+          indicators, containers, and cross letters.
         </p>
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           <div className="rounded-xl border border-neutral-200 p-4">
@@ -646,9 +503,9 @@ export default function Home({}: Route.ComponentProps) {
       <section id="progress-tracking" className="mx-auto max-w-6xl px-4 py-12">
         <h2 className="text-2xl font-bold">Track Progress and Improve</h2>
         <p className="mt-3 text-neutral-700">
-          Learn simple ways to measure improvement: average guesses, solve time,
-          streak length, and accuracy. Set weekly goals, review errors, and
-          adjust strategy with small data driven tweaks.
+          Measure improvement with average guesses, solve time, streak length,
+          and accuracy. Set weekly goals, review errors, and adjust strategy
+          with small data-driven tweaks.
         </p>
         <ul className="mt-4 list-inside list-disc text-neutral-800">
           <li>Goal setting templates</li>
@@ -657,53 +514,12 @@ export default function Home({}: Route.ComponentProps) {
         </ul>
       </section>
 
-      {/* 15) Coming Soon */}
-      <section id="coming-soon" className="mx-auto max-w-6xl px-4 py-12">
-        <h2 className="text-2xl font-bold">Coming Soon on Learn Word Games</h2>
-        <p className="mt-3 text-neutral-700">
-          In-depth guides, printable drills, daily warmups, and strategy videos.
-          The goal is simple, practical learning that improves your results
-          across every word puzzle you play.
-        </p>
-        <div className="mt-4 rounded-xl border border-neutral-200 p-4 text-sm text-neutral-700">
-          Want updates? Add the site to your home screen and check the Daily
-          Practice Hub.
-        </div>
-      </section>
-
-      {/* 16) Learning Paths */}
-      <section id="learning-paths" className="mx-auto max-w-6xl px-4 py-12">
-        <h2 className="text-2xl font-bold">Learning Paths for Every Player</h2>
-        <p className="mt-3 text-neutral-700">
-          Choose a focused path and progress step by step. Options include
-          Beginner Fundamentals, Crossword Starter, Anagram Sprint, Daily Guess
-          Mastery, and Speed Solver. Each path mixes rules, tactics, drills, and
-          review checklists to build reliable word game skills.
-        </p>
-        <ul className="mt-4 grid gap-2 sm:grid-cols-2">
-          <li className="list-inside list-disc text-neutral-800">
-            Beginner Fundamentals: rules and accuracy
-          </li>
-          <li className="list-inside list-disc text-neutral-800">
-            Crossword Starter: clue types and grid flow
-          </li>
-          <li className="list-inside list-disc text-neutral-800">
-            Anagram Sprint: stems and anchors
-          </li>
-          <li className="list-inside list-disc text-neutral-800">
-            Daily Guess Mastery: coverage and feedback
-          </li>
-        </ul>
-      </section>
-
-      {/* 17) Word Lists Hub */}
+      {/* 15) Word Lists Hub */}
       <section id="word-lists" className="mx-auto max-w-6xl px-4 py-12">
         <h2 className="text-2xl font-bold">Curated Word Lists for Puzzles</h2>
         <p className="mt-3 text-neutral-700">
-          High value lists that appear in real puzzles: two letter helpers,
-          common three letter entries, vowel heavy sets, consonant clusters,
-          rare letter anchors, and themed vocabulary packs. Use lists for
-          warmups or targeted practice.
+          Two-letter helpers, common three-letter entries, vowel-heavy sets,
+          consonant clusters, rare letter anchors, and themed vocabulary packs.
         </p>
         <div className="mt-4 grid gap-3 sm:grid-cols-3">
           <div className="rounded-xl border border-neutral-200 p-4">
@@ -727,14 +543,13 @@ export default function Home({}: Route.ComponentProps) {
         </div>
       </section>
 
-      {/* 18) Tools and Generators */}
+      {/* 16) Tools and Generators */}
       <section id="tools-generators" className="mx-auto max-w-6xl px-4 py-12">
         <h2 className="text-2xl font-bold">Word Game Tools and Generators</h2>
         <p className="mt-3 text-neutral-700">
-          Planned utilities that support learning and fair play: letter
-          frequency charts, anagram trainer, pattern finder, syllable counter,
-          rhyme explorer, and printable drill maker. Tools are designed for
-          practice and education.
+          Letter frequency charts, anagram trainer, pattern finder, syllable
+          counter, rhyme explorer, and printable drill maker — utilities that
+          support practice and education.
         </p>
         <ul className="mt-4 list-inside list-disc text-neutral-800">
           <li>Letter frequency and position heatmaps</li>
@@ -742,186 +557,330 @@ export default function Home({}: Route.ComponentProps) {
           <li>Printable drill maker for offline study</li>
         </ul>
       </section>
+      {/* SEO-rich internal navigation & trust blocks */}
+      <section className="mx-auto max-w-6xl px-4 pb-6">
+        {/* Popular Guides */}
+        <div className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm">
+          <h2 className="text-2xl font-bold">Popular Guides & Quick Starts</h2>
+          <p className="mt-2 text-neutral-700">
+            Jump into the most useful, short reads for faster improvement.
+          </p>
+          <ul className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              {
+                href: "#beginners-guide",
+                label: "Beginner’s Guide to Word Games",
+              },
+              {
+                href: "#strategy-library",
+                label: "Word Game Strategy Library",
+              },
+              { href: "#daily-practice", label: "Daily Practice Hub" },
+              { href: "#rules-scoring", label: "Rules, Formats, and Scoring" },
+              { href: "#vocabulary-builder", label: "Vocabulary Builder" },
+              { href: "#anagram-pangram", label: "Anagram & Pangram Lab" },
+              {
+                href: "#crossword-skills",
+                label: "Crossword & Cryptic Skills",
+              },
+              {
+                href: "#spelling-frequency",
+                label: "Spelling & Letter Frequency",
+              },
+              { href: "#timed-playbook", label: "Timed Mode Playbook" },
+              { href: "#word-lists", label: "Curated Word Lists" },
+              {
+                href: "#tools-generators",
+                label: "Word Game Tools & Generators",
+              },
+              { href: "#progress-tracking", label: "Track Progress & Improve" },
+            ].map((item) => (
+              <li key={item.href}>
+                <a
+                  href={item.href}
+                  className="block rounded-xl border border-neutral-200 bg-white px-4 py-3 text-sm font-medium text-neutral-900 hover:bg-neutral-50"
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
 
-      {/* 19) Letter Frequency Guide */}
-      <section id="letter-frequency" className="mx-auto max-w-6xl px-4 py-12">
-        <h2 className="text-2xl font-bold">
-          Letter Frequency and Position Tactics
-        </h2>
-        <p className="mt-3 text-neutral-700">
-          Learn how often letters appear and where they usually land. Use common
-          openings, endings, and digraphs to test hypotheses quickly. Position
-          tactics cut guess count and raise solve rates in daily guess games and
-          spelling puzzles.
-        </p>
-        <div className="mt-4 rounded-xl border border-neutral-200 p-4 text-sm text-neutral-700">
-          Tip: confirm a vowel early, then probe high value consonants that
-          match pattern fit.
+        {/* Browse by Topic */}
+        <div className="mt-6 rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm">
+          <h2 className="text-2xl font-bold">Browse by Topic</h2>
+          <p className="mt-2 text-neutral-700">
+            Find focused tips for the games you play most.
+          </p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {[
+              { label: "Wordle & daily guess", href: "#beginners-guide" },
+              { label: "Crosswords", href: "#crossword-skills" },
+              { label: "Cryptics", href: "#crossword-skills" },
+              { label: "Anagrams", href: "#anagram-pangram" },
+              { label: "Pangrams", href: "#anagram-pangram" },
+              { label: "Spelling games", href: "#spelling-frequency" },
+              { label: "Letter frequency", href: "#spelling-frequency" },
+              { label: "Affixes & roots", href: "#vocabulary-builder" },
+              { label: "Timed modes", href: "#timed-playbook" },
+              { label: "Word lists", href: "#word-lists" },
+              { label: "Tools", href: "#tools-generators" },
+              { label: "ESL & phonics", href: "#esl-phonics" },
+            ].map((t) => (
+              <a
+                key={t.label}
+                href={t.href}
+                className="rounded-full border border-neutral-300 bg-white px-3 py-1.5 text-sm hover:bg-neutral-50"
+              >
+                {t.label}
+              </a>
+            ))}
+          </div>
+        </div>
+
+        {/* Mini How-To (rich snippet target) */}
+        <div className="mt-6 rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm">
+          <h2 className="text-2xl font-bold">
+            How to Pick a Strong Wordle Starter
+          </h2>
+          <ol className="mt-4 list-inside list-decimal space-y-2 text-neutral-800">
+            <li>
+              <span className="font-medium">Cover common letters:</span> Aim for
+              at least 3 high-frequency consonants and 2 vowels.
+            </li>
+            <li>
+              <span className="font-medium">Avoid duplicates early:</span> Use
+              five unique letters to maximize information from the first guess.
+            </li>
+            <li>
+              <span className="font-medium">Plan a second probe:</span> Choose a
+              backup word that covers new letters the first guess missed.
+            </li>
+          </ol>
+          <div className="mt-4 rounded-xl border border-neutral-200 bg-neutral-50 p-4 text-sm text-neutral-700">
+            <span className="font-semibold">Pro tip:</span> After the first
+            feedback, lock vowel position first, then test likely consonant
+            pairs (e.g., <span className="font-mono">TH</span>,{" "}
+            <span className="font-mono">ST</span>,{" "}
+            <span className="font-mono">CH</span>).
+          </div>
+        </div>
+
+        {/* Editorial standards / about */}
+        <div className="mt-6 rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm">
+          <h2 className="text-2xl font-bold">About Our Guides</h2>
+          <p className="mt-2 text-neutral-700">
+            Articles are short, practical, and updated for clarity. We favor
+            examples, letter-frequency data, and repeatable checklists over
+            trivia. Accessibility—legible type, high contrast, and
+            keyboard-friendly navigation—is part of our review for every page.
+          </p>
         </div>
       </section>
 
-      {/* 20) Affixes Playbook */}
-      <section id="affixes-playbook" className="mx-auto max-w-6xl px-4 py-12">
-        <h2 className="text-2xl font-bold">
-          Affixes Playbook for Faster Solves
-        </h2>
-        <p className="mt-3 text-neutral-700">
-          Build longer words by chaining prefixes and suffixes. Recognize common
-          endings, plural rules, and tense shifts. Affix awareness accelerates
-          anagram expansion and crossword fill.
-        </p>
-        <ul className="mt-4 list-inside list-disc text-neutral-800">
-          <li>Common prefixes that unlock stems</li>
-          <li>Suffix ladders for tense and noun forms</li>
-          <li>Derivational patterns for quick extensions</li>
-        </ul>
-      </section>
+      {/* Learners & Educators */}
+      <section id="learners-educators" className="mx-auto max-w-6xl px-4 pb-12">
+        <div className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm">
+          <h2 className="text-2xl font-bold">For Learners & Educators</h2>
+          <p className="mt-2 text-neutral-700">
+            Structured, research-informed activities for self-learners,
+            classrooms, and families. Use short drills, clear targets, and
+            printable materials to build vocabulary, decoding, and puzzle
+            strategy.
+          </p>
 
-      {/* 21) ESL and Phonics Corner */}
-      <section id="esl-phonics" className="mx-auto max-w-6xl px-4 py-12">
-        <h2 className="text-2xl font-bold">ESL and Phonics Corner</h2>
-        <p className="mt-3 text-neutral-700">
-          Friendly support for learners of English. Practice vowel teams,
-          consonant blends, and common irregular forms. Games reinforce
-          pronunciation, spelling, and vocabulary through short activities.
-        </p>
-        <ul className="mt-4 list-inside list-disc text-neutral-800">
-          <li>Phonics packs with minimal pairs</li>
-          <li>High frequency word sets</li>
-          <li>Picture clues for beginners</li>
-        </ul>
-      </section>
+          {/* Two-role overview */}
+          <div className="mt-6 grid gap-4 md:grid-cols-2">
+            {/* Learners */}
+            <article className="rounded-xl border border-neutral-200 p-5">
+              <h3 className="text-lg font-semibold">For Learners</h3>
+              <ul className="mt-3 list-inside list-disc text-neutral-800">
+                <li>
+                  Follow a weekly plan:{" "}
+                  <a
+                    className="underline hover:no-underline"
+                    href="#daily-practice"
+                  >
+                    Daily Practice Hub
+                  </a>{" "}
+                  →{" "}
+                  <a
+                    className="underline hover:no-underline"
+                    href="#strategy-library"
+                  >
+                    Strategy Library
+                  </a>{" "}
+                  →{" "}
+                  <a
+                    className="underline hover:no-underline"
+                    href="#progress-tracking"
+                  >
+                    Progress Tracking
+                  </a>
+                  .
+                </li>
+                <li>
+                  Build recall with{" "}
+                  <a
+                    className="underline hover:no-underline"
+                    href="#word-lists"
+                  >
+                    two- & three-letter helpers
+                  </a>{" "}
+                  and high-frequency affixes.
+                </li>
+                <li>
+                  Improve accuracy using{" "}
+                  <a
+                    className="underline hover:no-underline"
+                    href="#spelling-frequency"
+                  >
+                    letter frequency & position tactics
+                  </a>
+                  .
+                </li>
+                <li>
+                  Practice endgame discipline with{" "}
+                  <a
+                    className="underline hover:no-underline"
+                    href="#timed-playbook"
+                  >
+                    timed mode checkpoints
+                  </a>
+                  .
+                </li>
+              </ul>
+              <div className="mt-4 rounded-lg border border-neutral-200 bg-neutral-50 p-4 text-sm text-neutral-700">
+                <span className="font-medium">Outcome:</span> faster solves,
+                better guess efficiency, and stronger vocabulary recall in 4–6
+                weeks.
+              </div>
+            </article>
 
-      {/* 22) Family and Classroom Play */}
-      <section id="family-classroom" className="mx-auto max-w-6xl px-4 py-12">
-        <h2 className="text-2xl font-bold">Family and Classroom Word Games</h2>
-        <p className="mt-3 text-neutral-700">
-          Group friendly variations that promote turn taking, cooperation, and
-          skill building. Use printable sheets, timer rules, and easy scoring to
-          run quick sessions at home or in class.
-        </p>
-        <ul className="mt-4 list-inside list-disc text-neutral-800">
-          <li>Five minute warmups for groups</li>
-          <li>Team relay anagrams</li>
-          <li>Vocabulary bingo with themed sets</li>
-        </ul>
-      </section>
+            {/* Educators */}
+            <article className="rounded-xl border border-neutral-200 p-5">
+              <h3 className="text-lg font-semibold">For Educators & Parents</h3>
+              <ul className="mt-3 list-inside list-disc text-neutral-800">
+                <li>
+                  Use{" "}
+                  <a
+                    className="underline hover:no-underline"
+                    href="#printables-offline"
+                  >
+                    printable mini-crosswords & anagram sheets
+                  </a>{" "}
+                  for 5–10 minute warmups.
+                </li>
+                <li>
+                  Target phonics with{" "}
+                  <a
+                    className="underline hover:no-underline"
+                    href="#esl-phonics"
+                  >
+                    vowel teams, blends, and minimal pairs
+                  </a>
+                  .
+                </li>
+                <li>
+                  Differentiate by assigning{" "}
+                  <a
+                    className="underline hover:no-underline"
+                    href="#word-lists"
+                  >
+                    tiered word lists
+                  </a>{" "}
+                  (A1→C1) and clue types.
+                </li>
+                <li>
+                  Assess with quick rubrics: accuracy %, average guesses, and
+                  time-to-solve benchmarks.
+                </li>
+              </ul>
+              <div className="mt-4 rounded-lg border border-neutral-200 bg-neutral-50 p-4 text-sm text-neutral-700">
+                <span className="font-medium">Outcome:</span> measurable growth
+                in decoding, spelling, and clue interpretation with minimal
+                prep.
+              </div>
+            </article>
+          </div>
 
-      {/* 23) Competitive Play and Metrics */}
-      <section id="competitive-play" className="mx-auto max-w-6xl px-4 py-12">
-        <h2 className="text-2xl font-bold">
-          Competitive Play and Performance Metrics
-        </h2>
-        <p className="mt-3 text-neutral-700">
-          Track solve time, average guesses, accuracy, streak length, and
-          difficulty tiers. Use benchmarks to choose the right practice plan and
-          measure weekly improvement with clear, simple charts.
-        </p>
-        <ul className="mt-4 list-inside list-disc text-neutral-800">
-          <li>Baseline setup and weekly goals</li>
-          <li>Error taxonomy for review</li>
-          <li>Endgame checks that prevent misses</li>
-        </ul>
-      </section>
+          {/* Vocabulary Track: compact syllabus */}
+          <div className="mt-6 rounded-xl border border-neutral-200 p-5">
+            <h3 className="text-lg font-semibold">
+              6-Week Vocabulary & Pattern Track (A2–B2)
+            </h3>
+            <div className="mt-3 grid gap-3 md:grid-cols-3">
+              <div className="rounded-lg border border-neutral-200 p-4">
+                <h4 className="font-medium">Weeks 1–2 · Foundations</h4>
+                <ul className="mt-2 list-inside list-disc text-sm text-neutral-800">
+                  <li>Two/three-letter power sets</li>
+                  <li>Common digraphs & positions</li>
+                  <li>
+                    <a
+                      className="underline hover:no-underline"
+                      href="#affixes-playbook"
+                    >
+                      High-yield prefixes/suffixes
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div className="rounded-lg border border-neutral-200 p-4">
+                <h4 className="font-medium">Weeks 3–4 · Expansion</h4>
+                <ul className="mt-2 list-inside list-disc text-sm text-neutral-800">
+                  <li>Stem → family expansion drills</li>
+                  <li>Pangram/anchor letter hunts</li>
+                  <li>Cryptic indicators primer</li>
+                </ul>
+              </div>
+              <div className="rounded-lg border border-neutral-200 p-4">
+                <h4 className="font-medium">Weeks 5–6 · Fluency</h4>
+                <ul className="mt-2 list-inside list-disc text-sm text-neutral-800">
+                  <li>Timed sprints & error taxonomy</li>
+                  <li>Mixed-mode review sets</li>
+                  <li>
+                    <a
+                      className="underline hover:no-underline"
+                      href="#progress-tracking"
+                    >
+                      Benchmarks & streak logs
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div className="mt-4 flex flex-wrap gap-3">
+              <a
+                href="#daily-practice"
+                className="rounded-xl border border-neutral-300 bg-white px-4 py-2 text-sm font-medium hover:bg-neutral-50"
+              >
+                Start Daily Drills
+              </a>
+              <a
+                href="#word-lists"
+                className="rounded-xl border border-neutral-300 bg-white px-4 py-2 text-sm font-medium hover:bg-neutral-50"
+              >
+                Open Word Lists
+              </a>
+              <a
+                href="#printables-offline"
+                className="rounded-xl border border-neutral-300 bg-white px-4 py-2 text-sm font-medium hover:bg-neutral-50"
+              >
+                Get Printables
+              </a>
+            </div>
+          </div>
 
-      {/* 24) Common Errors and Fixes */}
-      <section id="common-errors" className="mx-auto max-w-6xl px-4 py-12">
-        <h2 className="text-2xl font-bold">
-          Common Word Game Errors and How to Fix Them
-        </h2>
-        <p className="mt-3 text-neutral-700">
-          Reduce avoidable mistakes with simple habits. Avoid tunnel vision,
-          manage duplicates, and confirm cross letters before committing. Short
-          checklists prevent lost points and broken streaks.
-        </p>
-        <div className="mt-4 grid gap-3 sm:grid-cols-3">
-          <div className="rounded-xl border border-neutral-200 p-4">
-            <h3 className="font-semibold">Pattern Lock</h3>
-            <p className="mt-1 text-neutral-700">
-              Keep at least two live branches until letters confirm.
+          {/* Measurement block */}
+          <div className="mt-6 rounded-xl border border-neutral-200 bg-neutral-50 p-5">
+            <h3 className="text-lg font-semibold">Measure What Matters</h3>
+            <p className="mt-2 text-sm text-neutral-700">
+              Track average guesses, solve time, and accuracy. Review one error
+              type per week (duplicates, mis-placed vowels, missed digraphs) and
+              apply a single fix in the next session.
             </p>
           </div>
-          <div className="rounded-xl border border-neutral-200 p-4">
-            <h3 className="font-semibold">Duplicate Control</h3>
-            <p className="mt-1 text-neutral-700">
-              Track repeated letters with a simple tally.
-            </p>
-          </div>
-          <div className="rounded-xl border border-neutral-200 p-4">
-            <h3 className="font-semibold">Cross Checks</h3>
-            <p className="mt-1 text-neutral-700">
-              Verify crossings before locking long entries.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* 25) Accessibility Checklist */}
-      <section
-        id="accessibility-checklist"
-        className="mx-auto max-w-6xl px-4 py-12"
-      >
-        <h2 className="text-2xl font-bold">
-          Accessibility Checklist for Comfortable Play
-        </h2>
-        <p className="mt-3 text-neutral-700">
-          Make puzzles easier to read and operate. Adjust font size, contrast,
-          motion, and keyboard controls. Mobile tips prevent taps from causing
-          errors during fast input.
-        </p>
-        <ul className="mt-4 list-inside list-disc text-neutral-800">
-          <li>Readable fonts and clear feedback colors</li>
-          <li>Reduced motion and focus outlines</li>
-          <li>Keyboard and touch friendly controls</li>
-        </ul>
-      </section>
-
-      {/* 26) Mobile Typing Tips */}
-      <section id="mobile-typing" className="mx-auto max-w-6xl px-4 py-12">
-        <h2 className="text-2xl font-bold">
-          Mobile Typing Tips for Word Games
-        </h2>
-        <p className="mt-3 text-neutral-700">
-          Improve speed and accuracy on phones and tablets. Use autocorrect
-          controls, long press characters, and split keyboards where available.
-          Keep fingers relaxed and use short bursts with quick review.
-        </p>
-        <ul className="mt-4 list-inside list-disc text-neutral-800">
-          <li>Short input bursts with pause checks</li>
-          <li>Smart cursor moves for quick edits</li>
-          <li>Sound and haptics for feedback</li>
-        </ul>
-      </section>
-
-      {/* 27) Printables and Offline Study */}
-      <section id="printables-offline" className="mx-auto max-w-6xl px-4 py-12">
-        <h2 className="text-2xl font-bold">Printables and Offline Study</h2>
-        <p className="mt-3 text-neutral-700">
-          Practice without screens. Use printable mini crosswords, anagram
-          sheets, syllable drills, and vocabulary ladders. Offline study builds
-          recall and pattern recognition with fewer distractions.
-        </p>
-        <ul className="mt-4 list-inside list-disc text-neutral-800">
-          <li>Daily five minute worksheets</li>
-          <li>Themed vocabulary ladders</li>
-          <li>Answer keys for self review</li>
-        </ul>
-      </section>
-
-      {/* 28) Editorial Roadmap */}
-      <section id="editorial-roadmap" className="mx-auto max-w-6xl px-4 py-12">
-        <h2 className="text-2xl font-bold">
-          Editorial Roadmap for Learn Word Games
-        </h2>
-        <p className="mt-3 text-neutral-700">
-          Upcoming guides and lessons include beginner rules, strategy deep
-          dives, letter frequency research, anagram labs, crossword clue
-          workshops, and printable packs. The goal is practical content that
-          improves results across every puzzle type.
-        </p>
-        <div className="mt-4 rounded-xl border border-neutral-200 p-4 text-sm text-neutral-700">
-          Check back weekly for new lessons in the Strategy Library and Daily
-          Practice Hub.
         </div>
       </section>
 
@@ -940,6 +899,193 @@ export default function Home({}: Route.ComponentProps) {
         </div>
       </section>
 
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": [
+              {
+                "@type": "Audience",
+                "@id": "https://learnwordgames.com/#students",
+                audienceType: "Students",
+                educationalRole: "Learner",
+              },
+              {
+                "@type": "Audience",
+                "@id": "https://learnwordgames.com/#educators",
+                audienceType: "Teachers",
+                educationalRole: "Instructor",
+              },
+              {
+                "@type": "Course",
+                name: "Vocabulary & Pattern Track (A2–B2)",
+                description:
+                  "A 6-week structured plan to build puzzle vocabulary, pattern recognition, and solve efficiency.",
+                url: "https://learnwordgames.com/#learners-educators",
+                provider: {
+                  "@type": "Organization",
+                  name: "Learn Word Games",
+                  url: "https://learnwordgames.com/",
+                },
+                audience: [
+                  { "@id": "https://learnwordgames.com/#students" },
+                  { "@id": "https://learnwordgames.com/#educators" },
+                ],
+                educationalLevel: ["A2", "B1", "B2"],
+                hasCourseInstance: {
+                  "@type": "CourseInstance",
+                  courseMode: "online",
+                  instructor: {
+                    "@type": "Organization",
+                    name: "Learn Word Games",
+                  },
+                },
+                learningResourceType: [
+                  "Practice worksheet",
+                  "Strategy guide",
+                  "Word list",
+                  "Timed drill",
+                ],
+              },
+            ],
+          }),
+        }}
+      />
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": [
+              {
+                "@type": "BreadcrumbList",
+                itemListElement: [
+                  {
+                    "@type": "ListItem",
+                    position: 1,
+                    name: "Home",
+                    item: "https://learnwordgames.com/",
+                  },
+                ],
+              },
+              {
+                "@type": "ItemList",
+                name: "Popular Guides & Quick Starts",
+                url: "https://learnwordgames.com/",
+                itemListElement: [
+                  {
+                    "@type": "ListItem",
+                    position: 1,
+                    name: "Beginner’s Guide to Word Games",
+                    url: "https://learnwordgames.com/#beginners-guide",
+                  },
+                  {
+                    "@type": "ListItem",
+                    position: 2,
+                    name: "Word Game Strategy Library",
+                    url: "https://learnwordgames.com/#strategy-library",
+                  },
+                  {
+                    "@type": "ListItem",
+                    position: 3,
+                    name: "Daily Practice Hub",
+                    url: "https://learnwordgames.com/#daily-practice",
+                  },
+                  {
+                    "@type": "ListItem",
+                    position: 4,
+                    name: "Rules, Formats, and Scoring",
+                    url: "https://learnwordgames.com/#rules-scoring",
+                  },
+                  {
+                    "@type": "ListItem",
+                    position: 5,
+                    name: "Vocabulary Builder",
+                    url: "https://learnwordgames.com/#vocabulary-builder",
+                  },
+                  {
+                    "@type": "ListItem",
+                    position: 6,
+                    name: "Anagram & Pangram Lab",
+                    url: "https://learnwordgames.com/#anagram-pangram",
+                  },
+                  {
+                    "@type": "ListItem",
+                    position: 7,
+                    name: "Crossword & Cryptic Skills",
+                    url: "https://learnwordgames.com/#crossword-skills",
+                  },
+                  {
+                    "@type": "ListItem",
+                    position: 8,
+                    name: "Spelling & Letter Frequency",
+                    url: "https://learnwordgames.com/#spelling-frequency",
+                  },
+                  {
+                    "@type": "ListItem",
+                    position: 9,
+                    name: "Timed Mode Playbook",
+                    url: "https://learnwordgames.com/#timed-playbook",
+                  },
+                  {
+                    "@type": "ListItem",
+                    position: 10,
+                    name: "Curated Word Lists",
+                    url: "https://learnwordgames.com/#word-lists",
+                  },
+                  {
+                    "@type": "ListItem",
+                    position: 11,
+                    name: "Word Game Tools & Generators",
+                    url: "https://learnwordgames.com/#tools-generators",
+                  },
+                  {
+                    "@type": "ListItem",
+                    position: 12,
+                    name: "Track Progress & Improve",
+                    url: "https://learnwordgames.com/#progress-tracking",
+                  },
+                ],
+              },
+              {
+                "@type": "HowTo",
+                name: "How to Pick a Strong Wordle Starter",
+                description:
+                  "Choose a first guess that maximizes information and sets up a high-coverage second probe.",
+                totalTime: "PT2M",
+                estimatedCost: {
+                  "@type": "MonetaryAmount",
+                  currency: "USD",
+                  value: "0",
+                },
+                step: [
+                  {
+                    "@type": "HowToStep",
+                    position: 1,
+                    name: "Cover common letters",
+                    text: "Aim for at least three high-frequency consonants and two vowels in your opener.",
+                  },
+                  {
+                    "@type": "HowToStep",
+                    position: 2,
+                    name: "Avoid duplicates early",
+                    text: "Use five unique letters so your first guess returns maximum information.",
+                  },
+                  {
+                    "@type": "HowToStep",
+                    position: 3,
+                    name: "Plan a second probe",
+                    text: "Have a backup that covers new letters your opener didn’t test.",
+                  },
+                ],
+              },
+            ],
+          }),
+        }}
+      />
+
       {/* Footer */}
       <footer className="border-t border-neutral-200 bg-neutral-50">
         <div className="mx-auto max-w-6xl px-4 py-6 text-sm text-neutral-600">
@@ -953,6 +1099,9 @@ export default function Home({}: Route.ComponentProps) {
               )}
             </div>
           </div>
+          <span className="sr-only">
+            Updated {new Date(nowISO).toISOString()}
+          </span>
         </div>
       </footer>
     </main>
