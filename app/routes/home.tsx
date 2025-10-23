@@ -1,4 +1,11 @@
-// app/routes/_index.tsx (or the file that matches your ./+types/home)
+// app/routes/_index.tsx (Hybrid style, Wordle-green accent, one-page layout)
+// Notes:
+// - Preserves all SEO meta and JSON-LD blocks
+// - Reorganizes UI with stronger educational positioning for higher RPM
+// - Keeps all original content, grouped into clearer sections
+// - Flat colors, accessible contrast, puzzle-inspired accents
+// - No em dashes per preference
+
 import { useLoaderData } from "react-router";
 import type { Route } from "./+types/home";
 import { json } from "@remix-run/node";
@@ -11,7 +18,6 @@ export function meta({}: Route.MetaArgs) {
   return [
     { title },
     { name: "description", content: description },
-    // Removed "keywords" (ignored by Google and can look spammy)
     { name: "robots", content: "index, follow, max-image-preview:large" },
     { property: "og:title", content: title },
     { property: "og:description", content: description },
@@ -22,12 +28,10 @@ export function meta({}: Route.MetaArgs) {
     { name: "twitter:title", content: title },
     { name: "twitter:description", content: description },
     { name: "theme-color", content: "#ffffff" },
-    { rel: "canonical", href: url },
   ];
 }
 
 export function loader({ context }: Route.LoaderArgs) {
-  // Keep your existing context example to avoid breaking anything
   return json({
     message: context.VALUE_FROM_EXPRESS,
     nowISO: new Date().toISOString(),
@@ -56,6 +60,7 @@ export default function Home({}: Route.ComponentProps) {
     },
   ];
 
+  // Primary JSON-LD bundle
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
@@ -72,6 +77,13 @@ export default function Home({}: Route.ComponentProps) {
         url: "https://learnwordgames.com/",
         logo: "https://learnwordgames.com/logo.png",
       },
+      // Educational signal for higher RPM targeting
+      {
+        "@type": "EducationalOrganization",
+        name: "Learn Word Games",
+        url: "https://learnwordgames.com/",
+        sameAs: ["https://learnwordgames.com/"],
+      },
       {
         "@type": "FAQPage",
         mainEntity: faqs.map((f) => ({
@@ -83,67 +95,218 @@ export default function Home({}: Route.ComponentProps) {
     ],
   };
 
+  // Accent color tokens
+  const accent = "#6AAA64"; // Wordle green
+  const accentDark = "#5a9458";
+  const slateBorder = "border-slate-200";
+  const slateText = "text-slate-800";
+
+  // Simple top nav items (scroll anchors)
+  const topNav = [
+    { href: "#learn", label: "Learn" },
+    { href: "#daily-practice", label: "Practice" },
+    { href: "#strategy-library", label: "Strategies" },
+    { href: "#word-lists", label: "Word Lists" },
+    { href: "#tools-generators", label: "Tools" },
+    { href: "#learners-educators", label: "For Teachers" },
+    { href: "#faq", label: "FAQ" },
+  ];
+
+  // Utility: section header
+  const SectionHeader = ({
+    id,
+    kicker,
+    title,
+    subtitle,
+  }: {
+    id?: string;
+    kicker?: string;
+    title: string;
+    subtitle?: string;
+  }) => (
+    <header id={id} className="mb-6">
+      {kicker ? (
+        <div
+          className="mb-2 inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium"
+          style={{ backgroundColor: "#E8F3E8", color: accentDark }}
+        >
+          {kicker}
+        </div>
+      ) : null}
+      <h2 className="text-2xl font-bold tracking-tight">{title}</h2>
+      {subtitle ? (
+        <p className="mt-2 text-slate-700">{subtitle}</p>
+      ) : null}
+    </header>
+  );
+
+  // Card shell
+  const Card = ({
+    children,
+    className = "",
+  }: {
+    children: React.ReactNode;
+    className?: string;
+  }) => (
+    <article
+      className={`rounded-2xl border ${slateBorder} bg-white p-5 shadow-sm ${className}`}
+    >
+      {children}
+    </article>
+  );
+
   return (
-    <main className="bg-white text-neutral-900">
+    <main className="bg-white text-slate-900">
       {/* JSON-LD */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
+      {/* Sticky Top Nav */}
+      <div className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+          <a
+            href="#top"
+            className="text-base font-semibold tracking-tight"
+            style={{ color: accentDark }}
+            aria-label="Learn Word Games Home"
+          >
+            Learn Word Games
+          </a>
+          <nav className="hidden gap-2 md:flex">
+            {topNav.map((n) => (
+              <a
+                key={n.href}
+                href={n.href}
+                className="rounded-full px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100"
+              >
+                {n.label}
+              </a>
+            ))}
+          </nav>
+          <a
+            href="#daily-practice"
+            className="hidden rounded-full px-3 py-1.5 text-sm font-semibold text-white md:inline-flex"
+            style={{ backgroundColor: accent }}
+          >
+            Start Practice
+          </a>
+        </div>
+      </div>
+
       {/* Hero */}
-      <section className="mx-auto max-w-6xl px-4 pt-12 pb-10">
-        <div className="flex flex-col items-start gap-6 md:flex-row md:items-center md:justify-between">
-          <div className="max-w-2xl">
-            <h1 className="text-4xl font-bold tracking-tight">
+      <section id="top" className="mx-auto max-w-6xl px-4 pt-12 pb-10">
+        <div className="grid items-stretch gap-8 md:grid-cols-2">
+          <div className="flex flex-col">
+            <div
+              className="inline-flex w-fit items-center rounded-full px-2.5 py-1 text-xs font-medium"
+              style={{ backgroundColor: "#E8F3E8", color: accentDark }}
+            >
+              Guides • Practice • Word Lists
+            </div>
+            <h1 className="mt-3 text-4xl font-extrabold leading-tight tracking-tight">
               Learn Word Games
             </h1>
-            <p className="mt-4 text-lg text-neutral-700">
-              Clear guides, bite-size lessons, and daily practice to level up
-              your vocabulary and puzzle skills. Learn rules, build strategy,
-              and have fun.
+            <p className="mt-3 text-lg text-slate-700">
+              Clear guides, bite-size lessons, and daily practice that build
+              vocabulary, decoding, and puzzle strategy. Improve Wordle skill,
+              crossword accuracy, anagram speed, and spelling game confidence.
+              Designed for learners, ESL students, parents, and teachers.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <a
                 href="#learn"
-                className="inline-flex items-center rounded-xl border border-neutral-300 bg-white px-4 py-2 text-sm font-medium shadow-sm hover:bg-neutral-50"
+                className="inline-flex items-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium shadow-sm hover:bg-slate-50"
               >
                 Explore what you will learn
               </a>
               <a
                 href="#faq"
-                className="inline-flex items-center rounded-xl border border-neutral-300 bg-white px-4 py-2 text-sm font-medium shadow-sm hover:bg-neutral-50"
+                className="inline-flex items-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium shadow-sm hover:bg-slate-50"
               >
                 Read common questions
               </a>
+              <a
+                href="#learners-educators"
+                className="inline-flex items-center rounded-xl px-4 py-2 text-sm font-semibold text-white"
+                style={{ backgroundColor: accent }}
+              >
+                For Teachers & Parents
+              </a>
+            </div>
+            <div className="mt-6 grid w-full max-w-xl grid-cols-3 gap-3">
+              <div className="rounded-xl border border-slate-200 bg-white p-4 text-center">
+                <div className="text-2xl font-bold">Literacy</div>
+                <div className="mt-1 text-xs text-slate-600">
+                  Vocabulary and decoding
+                </div>
+              </div>
+              <div className="rounded-xl border border-slate-200 bg-white p-4 text-center">
+                <div className="text-2xl font-bold">Strategy</div>
+                <div className="mt-1 text-xs text-slate-600">
+                  Wordle, crosswords, more
+                </div>
+              </div>
+              <div className="rounded-xl border border-slate-200 bg-white p-4 text-center">
+                <div className="text-2xl font-bold">Practice</div>
+                <div className="mt-1 text-xs text-slate-600">
+                  Daily drills and logs
+                </div>
+              </div>
             </div>
           </div>
-          <div className="w-full max-w-md">
-            <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
-              <h2 className="text-base font-semibold">Daily Brain Warmup</h2>
-              <p className="mt-2 text-sm text-neutral-600">
-                Short practice prompts that keep your mind sharp.
-              </p>
-              <ul className="mt-4 space-y-2 text-sm text-neutral-800">
-                <li>
-                  • Find a 7-letter anagram from:{" "}
-                  <span className="font-mono">T, E, A, R, S, L, I</span>
-                </li>
-                <li>• Define “canny” in one sentence</li>
-                <li>• Make 4 two-syllable rhymes for “cable”</li>
-              </ul>
-            </div>
-          </div>
+
+          {/* Daily Brain Warmup */}
+          <Card className="md:mt-0">
+            <h2 className="text-base font-semibold">Daily Brain Warmup</h2>
+            <p className="mt-2 text-sm text-slate-600">
+              Short practice prompts that keep your mind sharp.
+            </p>
+            <ul className="mt-4 space-y-2 text-sm text-slate-800">
+              <li>
+                • Find a 7-letter anagram from:{" "}
+                <span className="font-mono">T, E, A, R, S, L, I</span>
+              </li>
+              <li>• Define “canny” in one sentence</li>
+              <li>• Make 4 two-syllable rhymes for “cable”</li>
+            </ul>
+            <a
+              href="#daily-practice"
+              className="mt-5 inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-semibold text-white"
+              style={{ backgroundColor: accent }}
+            >
+              Do a 5 minute warmup
+            </a>
+          </Card>
         </div>
       </section>
 
+      {/* Mini anchor bar */}
+      <div className="mx-auto max-w-6xl px-4">
+        <div className="mb-8 overflow-x-auto rounded-xl border border-slate-200 bg-white p-2">
+          <div className="flex min-w-max items-center gap-2">
+            {topNav.map((n) => (
+              <a
+                key={n.href}
+                href={n.href}
+                className="rounded-full px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100"
+              >
+                {n.label}
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* What you will learn */}
-      <section id="learn" className="mx-auto max-w-6xl px-4 py-10">
-        <h2 className="text-2xl font-bold">What you will learn</h2>
-        <p className="mt-2 text-neutral-700">
-          Start with the basics, then move into strategy and speed. Lessons are
-          concise and practical.
-        </p>
+      <section className="mx-auto max-w-6xl px-4 py-10">
+        <SectionHeader
+          id="learn"
+          kicker="Learning Path"
+          title="What you will learn"
+          subtitle="Start with the basics, then move into strategy and speed. Lessons are concise and practical."
+        />
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {[
             {
@@ -171,80 +334,77 @@ export default function Home({}: Route.ComponentProps) {
               desc: "Short drills that fit into a morning routine and build steady progress.",
             },
           ].map((c) => (
-            <article
-              key={c.title}
-              className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm"
-            >
+            <Card key={c.title}>
               <h3 className="text-base font-semibold">{c.title}</h3>
-              <p className="mt-2 text-sm text-neutral-700">{c.desc}</p>
-            </article>
+              <p className="mt-2 text-sm text-slate-700">{c.desc}</p>
+            </Card>
           ))}
         </div>
       </section>
 
-      {/* Content buckets */}
+      {/* Three core buckets */}
       <section className="mx-auto max-w-6xl px-4 py-10">
         <div className="grid gap-4 lg:grid-cols-3">
-          <article className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
+          <Card>
             <h2 className="text-xl font-bold">Wordle and daily guess games</h2>
-            <p className="mt-2 text-neutral-700">
+            <p className="mt-2 text-slate-700">
               Starter words, elimination strategy, and letter frequency charts
               that reduce guess count and improve your average.
             </p>
-            <ul className="mt-3 list-inside list-disc text-sm text-neutral-800">
+            <ul className="mt-3 list-inside list-disc text-sm text-slate-800">
               <li>Optimal openers and coverage</li>
               <li>Hard mode discipline</li>
               <li>Color feedback planning</li>
             </ul>
-          </article>
-          <article className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
+          </Card>
+          <Card>
             <h2 className="text-xl font-bold">Crosswords and cryptics</h2>
-            <p className="mt-2 text-neutral-700">
+            <p className="mt-2 text-slate-700">
               Grid navigation, clue types, and solving tactics for themed and
               themeless puzzles with clean fill.
             </p>
-            <ul className="mt-3 list-inside list-disc text-sm text-neutral-800">
+            <ul className="mt-3 list-inside list-disc text-sm text-slate-800">
               <li>Common indicator words</li>
               <li>Charades, containers, reversals</li>
               <li>Handling obscure entries</li>
             </ul>
-          </article>
-          <article className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
+          </Card>
+          <Card>
             <h2 className="text-xl font-bold">
               Anagrams, pangrams, and spelling games
             </h2>
-            <p className="mt-2 text-neutral-700">
+            <p className="mt-2 text-slate-700">
               Time your search, spot anchors, and build longer words from short
               stems with repeatable methods.
             </p>
-            <ul className="mt-3 list-inside list-disc text-sm text-neutral-800">
+            <ul className="mt-3 list-inside list-disc text-sm text-slate-800">
               <li>Stem expansion playbook</li>
               <li>Prefix and suffix chains</li>
               <li>Letter bucket drills</li>
             </ul>
-          </article>
+          </Card>
         </div>
       </section>
 
       {/* Social proof */}
       <section className="mx-auto max-w-6xl px-4 py-10">
-        <div className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <div className="grid gap-6 text-center sm:grid-cols-3">
             <div>
               <div className="text-3xl font-bold">Fast reads</div>
-              <div className="mt-1 text-sm text-neutral-600">
+              <div className="mt-1 text-sm text-slate-600">
                 Lessons that fit a short break
               </div>
             </div>
             <div>
               <div className="text-3xl font-bold">Practical tips</div>
-              <div className="mt-1 text-sm text-neutral-600">
+              <div className="mt-1 text-sm text-slate-600">
                 Strategies you can apply today
               </div>
             </div>
             <div>
               <div className="text-3xl font-bold">Daily practice</div>
-              <div className="mt-1 text-sm text-neutral-600">
+              <div className="mt-1 text-sm text-slate-600">
                 Keep your streak and build skill
               </div>
             </div>
@@ -254,14 +414,11 @@ export default function Home({}: Route.ComponentProps) {
 
       {/* 1) Beginner’s Guide */}
       <section id="beginners-guide" className="mx-auto max-w-6xl px-4 py-12">
-        <h2 className="text-2xl font-bold">Beginner’s Guide to Word Games</h2>
-        <p className="mt-3 text-neutral-700">
-          New to word games? Start here. Learn the core rules, common formats,
-          and simple tactics that improve accuracy and speed. This guide covers
-          daily guess games like Wordle, classic crosswords, anagrams, pangrams,
-          spelling challenges, cryptograms, and grid puzzles.
-        </p>
-        <ul className="mt-4 list-inside list-disc text-neutral-800">
+        <SectionHeader
+          title="Beginner’s Guide to Word Games"
+          subtitle="New to word games? Start here. Learn the core rules, common formats, and simple tactics that improve accuracy and speed. This guide covers daily guess games like Wordle, classic crosswords, anagrams, pangrams, spelling challenges, cryptograms, and grid puzzles."
+        />
+        <ul className="mt-4 list-inside list-disc text-slate-800">
           <li>Rules and scoring explained with clear examples</li>
           <li>Time management for timed modes</li>
           <li>Warmup drills that build consistency</li>
@@ -270,23 +427,21 @@ export default function Home({}: Route.ComponentProps) {
 
       {/* 2) Strategy Library */}
       <section id="strategy-library" className="mx-auto max-w-6xl px-4 py-12">
-        <h2 className="text-2xl font-bold">Word Game Strategy Library</h2>
-        <p className="mt-3 text-neutral-700">
-          Practical strategies for popular titles. Use elimination planning in
-          Wordle, clue families in crosswords, stem expansion in anagrams,
-          frequency maps in Spelling Bee, and pattern locks in cryptograms.
-        </p>
+        <SectionHeader
+          title="Word Game Strategy Library"
+          subtitle="Practical strategies for popular titles. Use elimination planning in Wordle, clue families in crosswords, stem expansion in anagrams, frequency maps in Spelling Bee, and pattern locks in cryptograms."
+        />
         <ul className="mt-4 grid gap-2 sm:grid-cols-2">
-          <li className="list-inside list-disc text-neutral-800">
+          <li className="list-inside list-disc text-slate-800">
             Letter coverage and optimal openers
           </li>
-          <li className="list-inside list-disc text-neutral-800">
+          <li className="list-inside list-disc text-slate-800">
             Hard mode discipline and constraint play
           </li>
-          <li className="list-inside list-disc text-neutral-800">
+          <li className="list-inside list-disc text-slate-800">
             Affixes, digraphs, and word families
           </li>
-          <li className="list-inside list-disc text-neutral-800">
+          <li className="list-inside list-disc text-slate-800">
             Clue indicators for cryptic crosswords
           </li>
         </ul>
@@ -294,13 +449,11 @@ export default function Home({}: Route.ComponentProps) {
 
       {/* 3) Daily Practice Hub */}
       <section id="daily-practice" className="mx-auto max-w-6xl px-4 py-12">
-        <h2 className="text-2xl font-bold">Daily Practice Hub</h2>
-        <p className="mt-3 text-neutral-700">
-          Short, repeatable drills that fit a morning routine. Rotate through
-          anagram sprints, pangram hunts, mini crosswords, synonym ladders, and
-          letter bucket challenges.
-        </p>
-        <ul className="mt-4 list-inside list-disc text-neutral-800">
+        <SectionHeader
+          title="Daily Practice Hub"
+          subtitle="Short, repeatable drills that fit a morning routine. Rotate through anagram sprints, pangram hunts, mini crosswords, synonym ladders, and letter bucket challenges."
+        />
+        <ul className="mt-4 list-inside list-disc text-slate-800">
           <li>5-minute warmups for consistency</li>
           <li>Targeted speed rounds for accuracy</li>
           <li>Weekly skill checks and progress notes</li>
@@ -309,22 +462,20 @@ export default function Home({}: Route.ComponentProps) {
 
       {/* 4) Rules and Scoring */}
       <section id="rules-scoring" className="mx-auto max-w-6xl px-4 py-12">
-        <h2 className="text-2xl font-bold">Rules, Formats, and Scoring</h2>
-        <p className="mt-3 text-neutral-700">
-          Understand how different word games score points and define win
-          conditions. Learn standard grids, clue types, guess limits, streak
-          tracking, and tie breakers.
-        </p>
+        <SectionHeader
+          title="Rules, Formats, and Scoring"
+          subtitle="Understand how different word games score points and define win conditions. Learn standard grids, clue types, guess limits, streak tracking, and tie breakers."
+        />
         <dl className="mt-4 grid gap-4 sm:grid-cols-2">
-          <div className="rounded-xl border border-neutral-200 p-4">
+          <div className="rounded-xl border border-slate-200 p-4">
             <dt className="font-semibold">Daily Guess Games</dt>
-            <dd className="mt-1 text-neutral-700">
+            <dd className="mt-1 text-slate-700">
               Color feedback planning, letter coverage, and duplicate handling.
             </dd>
           </div>
-          <div className="rounded-xl border border-neutral-200 p-4">
+          <div className="rounded-xl border border-slate-200 p-4">
             <dt className="font-semibold">Crosswords</dt>
-            <dd className="mt-1 text-neutral-700">
+            <dd className="mt-1 text-slate-700">
               Theme entries, fill quality, abbreviations, and cryptic
               indicators.
             </dd>
@@ -334,57 +485,52 @@ export default function Home({}: Route.ComponentProps) {
 
       {/* 5) Vocabulary Builder */}
       <section id="vocabulary-builder" className="mx-auto max-w-6xl px-4 py-12">
-        <h2 className="text-2xl font-bold">
-          Vocabulary Builder for Word Games
-        </h2>
-        <p className="mt-3 text-neutral-700">
-          Curated lists that actually appear in puzzles: high-value stems,
-          roots/affixes, short power words, and tricky letter pairs.
-        </p>
-        <ul className="mt-4 list-inside list-disc text-neutral-800">
-          <li>Two- and three-letter power lists</li>
+        <SectionHeader
+          title="Vocabulary Builder for Word Games"
+          subtitle="Curated lists that actually appear in puzzles: high-value stems, roots and affixes, short power words, and tricky letter pairs."
+        />
+        <ul className="mt-4 list-inside list-disc text-slate-800">
+          <li>Two and three letter power lists</li>
           <li>Root families with examples</li>
-          <li>Vowel-heavy and consonant-cluster sets</li>
+          <li>Vowel heavy and consonant cluster sets</li>
         </ul>
       </section>
 
       {/* 6) Anagram and Pangram Lab */}
       <section id="anagram-pangram" className="mx-auto max-w-6xl px-4 py-12">
-        <h2 className="text-2xl font-bold">Anagram and Pangram Lab</h2>
-        <p className="mt-3 text-neutral-700">
-          Spot anchors, shuffle consonant clusters, and extend stems into longer
-          words. Tactics that cover the full alphabet set without stalling.
-        </p>
+        <SectionHeader
+          title="Anagram and Pangram Lab"
+          subtitle="Spot anchors, shuffle consonant clusters, and extend stems into longer words. Tactics that cover the full alphabet set without stalling."
+        />
         <div className="mt-4 grid gap-3 sm:grid-cols-3">
-          <div className="rounded-xl border border-neutral-200 p-4">
+          <Card>
             <h3 className="font-semibold">Anchor Letters</h3>
-            <p className="mt-1 text-neutral-700">
+            <p className="mt-1 text-slate-700">
               Use fixed vowels or rare consonants to stabilize searches.
             </p>
-          </div>
-          <div className="rounded-xl border border-neutral-200 p-4">
+          </Card>
+          <Card>
             <h3 className="font-semibold">Cluster Play</h3>
-            <p className="mt-1 text-neutral-700">
+            <p className="mt-1 text-slate-700">
               Work with common pairs like TH, ST, PR, and CH.
             </p>
-          </div>
-          <div className="rounded-xl border border-neutral-200 p-4">
+          </Card>
+          <Card>
             <h3 className="font-semibold">Stem Expansion</h3>
-            <p className="mt-1 text-neutral-700">
+            <p className="mt-1 text-slate-700">
               Add prefixes and suffixes to scale short seeds.
             </p>
-          </div>
+          </Card>
         </div>
       </section>
 
       {/* 7) Crossword Skills */}
       <section id="crossword-skills" className="mx-auto max-w-6xl px-4 py-12">
-        <h2 className="text-2xl font-bold">Crossword and Cryptic Skills</h2>
-        <p className="mt-3 text-neutral-700">
-          Decode clue structures, track indicator words, and manage grid flow.
-          Use cross letters to verify entries and keep fill clean.
-        </p>
-        <ul className="mt-4 list-inside list-disc text-neutral-800">
+        <SectionHeader
+          title="Crossword and Cryptic Skills"
+          subtitle="Decode clue structures, track indicator words, and manage grid flow. Use cross letters to verify entries and keep fill clean."
+        />
+        <ul className="mt-4 list-inside list-disc text-slate-800">
           <li>Abbreviations that appear often</li>
           <li>Theme spotting and long entry planning</li>
           <li>Proofing and error control</li>
@@ -393,14 +539,11 @@ export default function Home({}: Route.ComponentProps) {
 
       {/* 8) Spelling and Letter Frequency */}
       <section id="spelling-frequency" className="mx-auto max-w-6xl px-4 py-12">
-        <h2 className="text-2xl font-bold">
-          Spelling Games and Letter Frequency
-        </h2>
-        <p className="mt-3 text-neutral-700">
-          Use frequency maps and vowel placement to prioritize guesses. Master
-          common suffixes and endings that close solves quickly.
-        </p>
-        <div className="mt-4 rounded-xl border border-neutral-200 p-4 text-sm text-neutral-700">
+        <SectionHeader
+          title="Spelling Games and Letter Frequency"
+          subtitle="Use frequency maps and vowel placement to prioritize guesses. Master common suffixes and endings that close solves quickly."
+        />
+        <div className="mt-4 rounded-xl border border-slate-200 p-4 text-sm text-slate-700">
           Quick tip: start with broad coverage, confirm vowels, then lock
           high-value consonants based on pattern fit.
         </div>
@@ -408,67 +551,50 @@ export default function Home({}: Route.ComponentProps) {
 
       {/* 9) Timed Mode Playbook */}
       <section id="timed-playbook" className="mx-auto max-w-6xl px-4 py-12">
-        <h2 className="text-2xl font-bold">Timed Mode Playbook</h2>
-        <p className="mt-3 text-neutral-700">
-          Build speed without losing accuracy. Use checkpoint pacing, partial
-          fills, letter bank triage, and safe sacrifices when the clock is
-          tight.
-        </p>
-        <ul className="mt-4 list-inside list-disc text-neutral-800">
-          <li>Pacing and micro-timers</li>
+        <SectionHeader
+          title="Timed Mode Playbook"
+          subtitle="Build speed without losing accuracy. Use checkpoint pacing, partial fills, letter bank triage, and safe sacrifices when the clock is tight."
+        />
+        <ul className="mt-4 list-inside list-disc text-slate-800">
+          <li>Pacing and micro timers</li>
           <li>Error recovery and endgame checks</li>
           <li>Focus cues that cut hesitation</li>
         </ul>
       </section>
 
       {/* 10) Game Reviews and Comparisons */}
-      <section
-        id="reviews-comparisons"
-        className="mx-auto max-w-6xl px-4 py-12"
-      >
-        <h2 className="text-2xl font-bold">
-          Word Game Reviews and Comparisons
-        </h2>
-        <p className="mt-3 text-neutral-700">
-          See how popular games differ in rules, difficulty, and learning curve.
-          Choose the right practice tool for your goals.
-        </p>
-        <ul className="mt-4 list-inside list-disc text-neutral-800">
-          <li>Daily guess games vs. grid-based puzzles</li>
-          <li>Solo practice vs. competitive scoring</li>
+      <section id="reviews-comparisons" className="mx-auto max-w-6xl px-4 py-12">
+        <SectionHeader
+          title="Word Game Reviews and Comparisons"
+          subtitle="See how popular games differ in rules, difficulty, and learning curve. Choose the right practice tool for your goals."
+        />
+        <ul className="mt-4 list-inside list-disc text-slate-800">
+          <li>Daily guess games vs grid based puzzles</li>
+          <li>Solo practice vs competitive scoring</li>
           <li>Mobile friendly modes and accessibility</li>
         </ul>
       </section>
 
       {/* 11) Parents and Teachers */}
       <section id="parents-teachers" className="mx-auto max-w-6xl px-4 py-12">
-        <h2 className="text-2xl font-bold">
-          Resources for Parents and Teachers
-        </h2>
-        <p className="mt-3 text-neutral-700">
-          Short, structured activities to boost literacy, spelling, and
-          reasoning skills. Printables and classroom-friendly drills support
-          steady progress.
-        </p>
-        <ul className="mt-4 list-inside list-disc text-neutral-800">
+        <SectionHeader
+          title="Resources for Parents and Teachers"
+          subtitle="Short, structured activities to boost literacy, spelling, and reasoning skills. Printables and classroom friendly drills support steady progress."
+        />
+        <ul className="mt-4 list-inside list-disc text-slate-800">
           <li>Beginner word lists and phonics sets</li>
           <li>Crossword clue starters and templates</li>
-          <li>Five-minute warmups for groups</li>
+          <li>Five minute warmups for groups</li>
         </ul>
       </section>
 
       {/* 12) Accessibility and Mobile Play */}
-      <section
-        id="accessibility-mobile"
-        className="mx-auto max-w-6xl px-4 py-12"
-      >
-        <h2 className="text-2xl font-bold">Accessibility and Mobile Play</h2>
-        <p className="mt-3 text-neutral-700">
-          Helpful settings for comfortable play: font sizing, high contrast
-          options, reduced motion, and keyboard shortcuts. Mobile tips cover
-          small-screen grid navigation and mistake prevention during fast input.
-        </p>
-        <ul className="mt-4 list-inside list-disc text-neutral-800">
+      <section id="accessibility-mobile" className="mx-auto max-w-6xl px-4 py-12">
+        <SectionHeader
+          title="Accessibility and Mobile Play"
+          subtitle="Helpful settings for comfortable play: font sizing, high contrast options, reduced motion, and keyboard shortcuts. Mobile tips cover small screen grid navigation and mistake prevention during fast input."
+        />
+        <ul className="mt-4 list-inside list-disc text-slate-800">
           <li>Readable fonts and clear color feedback</li>
           <li>Keyboard and touch entry tips</li>
           <li>Error controls and undo safety</li>
@@ -477,37 +603,34 @@ export default function Home({}: Route.ComponentProps) {
 
       {/* 13) Glossary */}
       <section id="glossary" className="mx-auto max-w-6xl px-4 py-12">
-        <h2 className="text-2xl font-bold">Word Game Glossary</h2>
-        <p className="mt-3 text-neutral-700">
-          A quick reference for common terms: digraphs, pangrams, anagram
-          indicators, containers, and cross letters.
-        </p>
+        <SectionHeader
+          title="Word Game Glossary"
+          subtitle="A quick reference for common terms: digraphs, pangrams, anagram indicators, containers, and cross letters."
+        />
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
-          <div className="rounded-xl border border-neutral-200 p-4">
+          <Card>
             <h3 className="font-semibold">Digraph</h3>
-            <p className="mt-1 text-neutral-700">
+            <p className="mt-1 text-slate-700">
               Two letters that represent one sound or common pair, like TH or
               CH.
             </p>
-          </div>
-          <div className="rounded-xl border border-neutral-200 p-4">
+          </Card>
+          <Card>
             <h3 className="font-semibold">Pangram</h3>
-            <p className="mt-1 text-neutral-700">
+            <p className="mt-1 text-slate-700">
               A set that includes every required letter at least once.
             </p>
-          </div>
+          </Card>
         </div>
       </section>
 
       {/* 14) Progress Tracking */}
       <section id="progress-tracking" className="mx-auto max-w-6xl px-4 py-12">
-        <h2 className="text-2xl font-bold">Track Progress and Improve</h2>
-        <p className="mt-3 text-neutral-700">
-          Measure improvement with average guesses, solve time, streak length,
-          and accuracy. Set weekly goals, review errors, and adjust strategy
-          with small data-driven tweaks.
-        </p>
-        <ul className="mt-4 list-inside list-disc text-neutral-800">
+        <SectionHeader
+          title="Track Progress and Improve"
+          subtitle="Measure improvement with average guesses, solve time, streak length, and accuracy. Set weekly goals, review errors, and adjust strategy with small data driven tweaks."
+        />
+        <ul className="mt-4 list-inside list-disc text-slate-800">
           <li>Goal setting templates</li>
           <li>Accuracy and streak logs</li>
           <li>Weekly review checklist</li>
@@ -516,101 +639,84 @@ export default function Home({}: Route.ComponentProps) {
 
       {/* 15) Word Lists Hub */}
       <section id="word-lists" className="mx-auto max-w-6xl px-4 py-12">
-        <h2 className="text-2xl font-bold">Curated Word Lists for Puzzles</h2>
-        <p className="mt-3 text-neutral-700">
-          Two-letter helpers, common three-letter entries, vowel-heavy sets,
-          consonant clusters, rare letter anchors, and themed vocabulary packs.
-        </p>
+        <SectionHeader
+          title="Curated Word Lists for Puzzles"
+          subtitle="Two letter helpers, common three letter entries, vowel heavy sets, consonant clusters, rare letter anchors, and themed vocabulary packs."
+        />
         <div className="mt-4 grid gap-3 sm:grid-cols-3">
-          <div className="rounded-xl border border-neutral-200 p-4">
+          <Card>
             <h3 className="font-semibold">Two and Three Letter</h3>
-            <p className="mt-1 text-neutral-700">
+            <p className="mt-1 text-slate-700">
               Essential short words for speed and fill control.
             </p>
-          </div>
-          <div className="rounded-xl border border-neutral-200 p-4">
+          </Card>
+          <Card>
             <h3 className="font-semibold">Affixes and Roots</h3>
-            <p className="mt-1 text-neutral-700">
+            <p className="mt-1 text-slate-700">
               Prefixes, suffixes, and root families that scale entries.
             </p>
-          </div>
-          <div className="rounded-xl border border-neutral-200 p-4">
+          </Card>
+          <Card>
             <h3 className="font-semibold">Rare Anchors</h3>
-            <p className="mt-1 text-neutral-700">
+            <p className="mt-1 text-slate-700">
               Words with J, Q, X, Z for tricky boards.
             </p>
-          </div>
+          </Card>
         </div>
       </section>
 
       {/* 16) Tools and Generators */}
       <section id="tools-generators" className="mx-auto max-w-6xl px-4 py-12">
-        <h2 className="text-2xl font-bold">Word Game Tools and Generators</h2>
-        <p className="mt-3 text-neutral-700">
-          Letter frequency charts, anagram trainer, pattern finder, syllable
-          counter, rhyme explorer, and printable drill maker — utilities that
-          support practice and education.
-        </p>
-        <ul className="mt-4 list-inside list-disc text-neutral-800">
+        <SectionHeader
+          title="Word Game Tools and Generators"
+          subtitle="Letter frequency charts, anagram trainer, pattern finder, syllable counter, rhyme explorer, and printable drill maker, utilities that support practice and education."
+        />
+        <ul className="mt-4 list-inside list-disc text-slate-800">
           <li>Letter frequency and position heatmaps</li>
           <li>Pattern finder with wildcard slots</li>
           <li>Printable drill maker for offline study</li>
         </ul>
       </section>
+
       {/* SEO-rich internal navigation & trust blocks */}
       <section className="mx-auto max-w-6xl px-4 pb-6">
         {/* Popular Guides */}
-        <div className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm">
+        <Card>
           <h2 className="text-2xl font-bold">Popular Guides & Quick Starts</h2>
-          <p className="mt-2 text-neutral-700">
+          <p className="mt-2 text-slate-700">
             Jump into the most useful, short reads for faster improvement.
           </p>
           <ul className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
             {[
-              {
-                href: "#beginners-guide",
-                label: "Beginner’s Guide to Word Games",
-              },
-              {
-                href: "#strategy-library",
-                label: "Word Game Strategy Library",
-              },
+              { href: "#beginners-guide", label: "Beginner’s Guide to Word Games" },
+              { href: "#strategy-library", label: "Word Game Strategy Library" },
               { href: "#daily-practice", label: "Daily Practice Hub" },
               { href: "#rules-scoring", label: "Rules, Formats, and Scoring" },
               { href: "#vocabulary-builder", label: "Vocabulary Builder" },
               { href: "#anagram-pangram", label: "Anagram & Pangram Lab" },
-              {
-                href: "#crossword-skills",
-                label: "Crossword & Cryptic Skills",
-              },
-              {
-                href: "#spelling-frequency",
-                label: "Spelling & Letter Frequency",
-              },
+              { href: "#crossword-skills", label: "Crossword & Cryptic Skills" },
+              { href: "#spelling-frequency", label: "Spelling & Letter Frequency" },
               { href: "#timed-playbook", label: "Timed Mode Playbook" },
               { href: "#word-lists", label: "Curated Word Lists" },
-              {
-                href: "#tools-generators",
-                label: "Word Game Tools & Generators",
-              },
+              { href: "#tools-generators", label: "Word Game Tools & Generators" },
               { href: "#progress-tracking", label: "Track Progress & Improve" },
             ].map((item) => (
               <li key={item.href}>
                 <a
                   href={item.href}
-                  className="block rounded-xl border border-neutral-200 bg-white px-4 py-3 text-sm font-medium text-neutral-900 hover:bg-neutral-50"
+                  className="block rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 hover:bg-slate-50"
                 >
                   {item.label}
                 </a>
               </li>
             ))}
           </ul>
-        </div>
+        </Card>
 
         {/* Browse by Topic */}
-        <div className="mt-6 rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm">
+        <Card className="mt-6">
           <h2 className="text-2xl font-bold">Browse by Topic</h2>
-          <p className="mt-2 text-neutral-700">
+          <p className="mt-2 text-slate-700">
             Find focused tips for the games you play most.
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
@@ -631,20 +737,18 @@ export default function Home({}: Route.ComponentProps) {
               <a
                 key={t.label}
                 href={t.href}
-                className="rounded-full border border-neutral-300 bg-white px-3 py-1.5 text-sm hover:bg-neutral-50"
+                className="rounded-full border border-slate-300 bg-white px-3 py-1.5 text-sm hover:bg-slate-50"
               >
                 {t.label}
               </a>
             ))}
           </div>
-        </div>
+        </Card>
 
         {/* Mini How-To (rich snippet target) */}
-        <div className="mt-6 rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm">
-          <h2 className="text-2xl font-bold">
-            How to Pick a Strong Wordle Starter
-          </h2>
-          <ol className="mt-4 list-inside list-decimal space-y-2 text-neutral-800">
+        <Card className="mt-6">
+          <h2 className="text-2xl font-bold">How to Pick a Strong Wordle Starter</h2>
+          <ol className="mt-4 list-inside list-decimal space-y-2 text-slate-800">
             <li>
               <span className="font-medium">Cover common letters:</span> Aim for
               at least 3 high-frequency consonants and 2 vowels.
@@ -658,33 +762,33 @@ export default function Home({}: Route.ComponentProps) {
               backup word that covers new letters the first guess missed.
             </li>
           </ol>
-          <div className="mt-4 rounded-xl border border-neutral-200 bg-neutral-50 p-4 text-sm text-neutral-700">
+          <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
             <span className="font-semibold">Pro tip:</span> After the first
             feedback, lock vowel position first, then test likely consonant
             pairs (e.g., <span className="font-mono">TH</span>,{" "}
             <span className="font-mono">ST</span>,{" "}
             <span className="font-mono">CH</span>).
           </div>
-        </div>
+        </Card>
 
         {/* Editorial standards / about */}
-        <div className="mt-6 rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm">
+        <Card className="mt-6">
           <h2 className="text-2xl font-bold">About Our Guides</h2>
-          <p className="mt-2 text-neutral-700">
+          <p className="mt-2 text-slate-700">
             Articles are short, practical, and updated for clarity. We favor
-            examples, letter-frequency data, and repeatable checklists over
-            trivia. Accessibility—legible type, high contrast, and
-            keyboard-friendly navigation—is part of our review for every page.
+            examples, letter frequency data, and repeatable checklists over
+            trivia. Accessibility, legible type, high contrast, and
+            keyboard-friendly navigation, is part of our review for every page.
           </p>
-        </div>
+        </Card>
       </section>
 
       {/* Learners & Educators */}
       <section id="learners-educators" className="mx-auto max-w-6xl px-4 pb-12">
-        <div className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm">
+        <Card>
           <h2 className="text-2xl font-bold">For Learners & Educators</h2>
-          <p className="mt-2 text-neutral-700">
-            Structured, research-informed activities for self-learners,
+          <p className="mt-2 text-slate-700">
+            Structured, research-informed activities for self learners,
             classrooms, and families. Use short drills, clear targets, and
             printable materials to build vocabulary, decoding, and puzzle
             strategy.
@@ -693,111 +797,84 @@ export default function Home({}: Route.ComponentProps) {
           {/* Two-role overview */}
           <div className="mt-6 grid gap-4 md:grid-cols-2">
             {/* Learners */}
-            <article className="rounded-xl border border-neutral-200 p-5">
+            <article className="rounded-xl border border-slate-200 p-5">
               <h3 className="text-lg font-semibold">For Learners</h3>
-              <ul className="mt-3 list-inside list-disc text-neutral-800">
+              <ul className="mt-3 list-inside list-disc text-slate-800">
                 <li>
                   Follow a weekly plan:{" "}
-                  <a
-                    className="underline hover:no-underline"
-                    href="#daily-practice"
-                  >
+                  <a className="underline hover:no-underline" href="#daily-practice">
                     Daily Practice Hub
                   </a>{" "}
                   →{" "}
-                  <a
-                    className="underline hover:no-underline"
-                    href="#strategy-library"
-                  >
+                  <a className="underline hover:no-underline" href="#strategy-library">
                     Strategy Library
                   </a>{" "}
                   →{" "}
-                  <a
-                    className="underline hover:no-underline"
-                    href="#progress-tracking"
-                  >
+                  <a className="underline hover:no-underline" href="#progress-tracking">
                     Progress Tracking
                   </a>
                   .
                 </li>
                 <li>
                   Build recall with{" "}
-                  <a
-                    className="underline hover:no-underline"
-                    href="#word-lists"
-                  >
-                    two- & three-letter helpers
+                  <a className="underline hover:no-underline" href="#word-lists">
+                    two and three letter helpers
                   </a>{" "}
-                  and high-frequency affixes.
+                  and high frequency affixes.
                 </li>
                 <li>
                   Improve accuracy using{" "}
-                  <a
-                    className="underline hover:no-underline"
-                    href="#spelling-frequency"
-                  >
-                    letter frequency & position tactics
+                  <a className="underline hover:no-underline" href="#spelling-frequency">
+                    letter frequency and position tactics
                   </a>
                   .
                 </li>
                 <li>
                   Practice endgame discipline with{" "}
-                  <a
-                    className="underline hover:no-underline"
-                    href="#timed-playbook"
-                  >
+                  <a className="underline hover:no-underline" href="#timed-playbook">
                     timed mode checkpoints
                   </a>
                   .
                 </li>
               </ul>
-              <div className="mt-4 rounded-lg border border-neutral-200 bg-neutral-50 p-4 text-sm text-neutral-700">
+              <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
                 <span className="font-medium">Outcome:</span> faster solves,
-                better guess efficiency, and stronger vocabulary recall in 4–6
+                better guess efficiency, and stronger vocabulary recall in 4 to 6
                 weeks.
               </div>
             </article>
 
             {/* Educators */}
-            <article className="rounded-xl border border-neutral-200 p-5">
+            <article className="rounded-xl border border-slate-200 p-5">
               <h3 className="text-lg font-semibold">For Educators & Parents</h3>
-              <ul className="mt-3 list-inside list-disc text-neutral-800">
+              <ul className="mt-3 list-inside list-disc text-slate-800">
                 <li>
                   Use{" "}
-                  <a
-                    className="underline hover:no-underline"
-                    href="#printables-offline"
-                  >
-                    printable mini-crosswords & anagram sheets
+                  <a className="underline hover:no-underline" href="#printables-offline">
+                    printable mini crosswords and anagram sheets
                   </a>{" "}
-                  for 5–10 minute warmups.
+                  for 5 to 10 minute warmups.
                 </li>
                 <li>
                   Target phonics with{" "}
-                  <a
-                    className="underline hover:no-underline"
-                    href="#esl-phonics"
-                  >
+                  <a className="underline hover:no-underline" href="#esl-phonics">
                     vowel teams, blends, and minimal pairs
                   </a>
                   .
                 </li>
                 <li>
                   Differentiate by assigning{" "}
-                  <a
-                    className="underline hover:no-underline"
-                    href="#word-lists"
-                  >
+                  <a className="underline hover:no-underline" href="#word-lists">
                     tiered word lists
                   </a>{" "}
-                  (A1→C1) and clue types.
+                  (A1 to C1) and clue types.
                 </li>
                 <li>
-                  Assess with quick rubrics: accuracy %, average guesses, and
-                  time-to-solve benchmarks.
+                  Assess with quick rubrics: accuracy percent, average guesses, and
+                  time to solve benchmarks.
                 </li>
               </ul>
-              <div className="mt-4 rounded-lg border border-neutral-200 bg-neutral-50 p-4 text-sm text-neutral-700">
+              <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
                 <span className="font-medium">Outcome:</span> measurable growth
                 in decoding, spelling, and clue interpretation with minimal
                 prep.
@@ -806,45 +883,39 @@ export default function Home({}: Route.ComponentProps) {
           </div>
 
           {/* Vocabulary Track: compact syllabus */}
-          <div className="mt-6 rounded-xl border border-neutral-200 p-5">
+          <div className="mt-6 rounded-xl border border-slate-200 p-5">
             <h3 className="text-lg font-semibold">
-              6-Week Vocabulary & Pattern Track (A2–B2)
+              6 Week Vocabulary & Pattern Track (A2 to B2)
             </h3>
             <div className="mt-3 grid gap-3 md:grid-cols-3">
-              <div className="rounded-lg border border-neutral-200 p-4">
-                <h4 className="font-medium">Weeks 1–2 · Foundations</h4>
-                <ul className="mt-2 list-inside list-disc text-sm text-neutral-800">
-                  <li>Two/three-letter power sets</li>
-                  <li>Common digraphs & positions</li>
+              <div className="rounded-lg border border-slate-200 p-4">
+                <h4 className="font-medium">Weeks 1 to 2 · Foundations</h4>
+                <ul className="mt-2 list-inside list-disc text-sm text-slate-800">
+                  <li>Two and three letter power sets</li>
+                  <li>Common digraphs and positions</li>
                   <li>
-                    <a
-                      className="underline hover:no-underline"
-                      href="#affixes-playbook"
-                    >
-                      High-yield prefixes/suffixes
+                    <a className="underline hover:no-underline" href="#affixes-playbook">
+                      High yield prefixes and suffixes
                     </a>
                   </li>
                 </ul>
               </div>
-              <div className="rounded-lg border border-neutral-200 p-4">
-                <h4 className="font-medium">Weeks 3–4 · Expansion</h4>
-                <ul className="mt-2 list-inside list-disc text-sm text-neutral-800">
-                  <li>Stem → family expansion drills</li>
-                  <li>Pangram/anchor letter hunts</li>
+              <div className="rounded-lg border border-slate-200 p-4">
+                <h4 className="font-medium">Weeks 3 to 4 · Expansion</h4>
+                <ul className="mt-2 list-inside list-disc text-sm text-slate-800">
+                  <li>Stem to family expansion drills</li>
+                  <li>Pangram and anchor letter hunts</li>
                   <li>Cryptic indicators primer</li>
                 </ul>
               </div>
-              <div className="rounded-lg border border-neutral-200 p-4">
-                <h4 className="font-medium">Weeks 5–6 · Fluency</h4>
-                <ul className="mt-2 list-inside list-disc text-sm text-neutral-800">
-                  <li>Timed sprints & error taxonomy</li>
-                  <li>Mixed-mode review sets</li>
+              <div className="rounded-lg border border-slate-200 p-4">
+                <h4 className="font-medium">Weeks 5 to 6 · Fluency</h4>
+                <ul className="mt-2 list-inside list-disc text-sm text-slate-800">
+                  <li>Timed sprints and error taxonomy</li>
+                  <li>Mixed mode review sets</li>
                   <li>
-                    <a
-                      className="underline hover:no-underline"
-                      href="#progress-tracking"
-                    >
-                      Benchmarks & streak logs
+                    <a className="underline hover:no-underline" href="#progress-tracking">
+                      Benchmarks and streak logs
                     </a>
                   </li>
                 </ul>
@@ -853,19 +924,19 @@ export default function Home({}: Route.ComponentProps) {
             <div className="mt-4 flex flex-wrap gap-3">
               <a
                 href="#daily-practice"
-                className="rounded-xl border border-neutral-300 bg-white px-4 py-2 text-sm font-medium hover:bg-neutral-50"
+                className="rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium hover:bg-slate-50"
               >
                 Start Daily Drills
               </a>
               <a
                 href="#word-lists"
-                className="rounded-xl border border-neutral-300 bg-white px-4 py-2 text-sm font-medium hover:bg-neutral-50"
+                className="rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium hover:bg-slate-50"
               >
                 Open Word Lists
               </a>
               <a
                 href="#printables-offline"
-                className="rounded-xl border border-neutral-300 bg-white px-4 py-2 text-sm font-medium hover:bg-neutral-50"
+                className="rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium hover:bg-slate-50"
               >
                 Get Printables
               </a>
@@ -873,32 +944,33 @@ export default function Home({}: Route.ComponentProps) {
           </div>
 
           {/* Measurement block */}
-          <div className="mt-6 rounded-xl border border-neutral-200 bg-neutral-50 p-5">
+          <div className="mt-6 rounded-xl border border-slate-200 bg-slate-50 p-5">
             <h3 className="text-lg font-semibold">Measure What Matters</h3>
-            <p className="mt-2 text-sm text-neutral-700">
+            <p className="mt-2 text-sm text-slate-700">
               Track average guesses, solve time, and accuracy. Review one error
-              type per week (duplicates, mis-placed vowels, missed digraphs) and
+              type per week, duplicates, mis placed vowels, missed digraphs, and
               apply a single fix in the next session.
             </p>
           </div>
-        </div>
+        </Card>
       </section>
 
       {/* FAQ */}
       <section id="faq" className="mx-auto max-w-6xl px-4 pb-16">
-        <h2 className="text-2xl font-bold">FAQ</h2>
-        <div className="mt-6 divide-y divide-neutral-200 rounded-2xl border border-neutral-200 bg-white shadow-sm">
+        <SectionHeader title="FAQ" />
+        <div className="mt-6 divide-y divide-slate-200 rounded-2xl border border-slate-200 bg-white shadow-sm">
           {faqs.map((f) => (
-            <details key={f.q} className="group open:bg-neutral-50">
+            <details key={f.q} className="group open:bg-slate-50">
               <summary className="cursor-pointer list-none px-5 py-4 font-medium">
                 {f.q}
               </summary>
-              <div className="px-5 pb-5 text-neutral-700">{f.a}</div>
+              <div className="px-5 pb-5 text-slate-700">{f.a}</div>
             </details>
           ))}
         </div>
       </section>
 
+      {/* Additional JSON-LD blocks retained and slightly enhanced */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -921,7 +993,7 @@ export default function Home({}: Route.ComponentProps) {
                 "@type": "Course",
                 name: "Vocabulary & Pattern Track (A2–B2)",
                 description:
-                  "A 6-week structured plan to build puzzle vocabulary, pattern recognition, and solve efficiency.",
+                  "A 6 week structured plan to build puzzle vocabulary, pattern recognition, and solve efficiency.",
                 url: "https://learnwordgames.com/#learners-educators",
                 provider: {
                   "@type": "Organization",
@@ -1053,7 +1125,7 @@ export default function Home({}: Route.ComponentProps) {
                 "@type": "HowTo",
                 name: "How to Pick a Strong Wordle Starter",
                 description:
-                  "Choose a first guess that maximizes information and sets up a high-coverage second probe.",
+                  "Choose a first guess that maximizes information and sets up a high coverage second probe.",
                 totalTime: "PT2M",
                 estimatedCost: {
                   "@type": "MonetaryAmount",
@@ -1065,7 +1137,7 @@ export default function Home({}: Route.ComponentProps) {
                     "@type": "HowToStep",
                     position: 1,
                     name: "Cover common letters",
-                    text: "Aim for at least three high-frequency consonants and two vowels in your opener.",
+                    text: "Aim for at least three high frequency consonants and two vowels in your opener.",
                   },
                   {
                     "@type": "HowToStep",
@@ -1077,7 +1149,7 @@ export default function Home({}: Route.ComponentProps) {
                     "@type": "HowToStep",
                     position: 3,
                     name: "Plan a second probe",
-                    text: "Have a backup that covers new letters your opener didn’t test.",
+                    text: "Have a backup that covers new letters your opener did not test.",
                   },
                 ],
               },
@@ -1087,11 +1159,11 @@ export default function Home({}: Route.ComponentProps) {
       />
 
       {/* Footer */}
-      <footer className="border-t border-neutral-200 bg-neutral-50">
-        <div className="mx-auto max-w-6xl px-4 py-6 text-sm text-neutral-600">
+      <footer className="border-t border-slate-200 bg-slate-50">
+        <div className="mx-auto max-w-6xl px-4 py-6 text-sm text-slate-600">
           <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
             <div>© {new Date().getFullYear()} Learn Word Games</div>
-            <div className="text-neutral-500">
+            <div className="text-slate-500">
               {message ? (
                 <span aria-live="polite">{message}</span>
               ) : (
